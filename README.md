@@ -4,6 +4,11 @@
 </div>
 
 ## 安装
+```bash
+npm install @moyu/bucket.js
+```
+
+## 使用
 ```javascript
 bucket.timeout = 10000; // 请求超时10s
 bucket.prefix = 'bucket-'; // localStorage前缀
