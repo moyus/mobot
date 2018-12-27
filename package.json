@@ -1,0 +1,32 @@
+{
+  "name": "bucket.js",
+  "version": "0.0.1",
+  "description": "cache scripts and styles in localStorage",
+  "main": "bucket.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moyus/bucket.js.git"
+  },
+  "files": [
+    "bucket.js",
+    "logo.svg",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "localStorage",
+    "cache",
+    "script",
+    "style"
+  ],
+  "author": {
+    "name": "moyus",
+    "email": "moyuboy@gmail.com",
+    "url": "https://moyu.io"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/moyus/bucket.js/issues"
+  },
+  "homepage": "https://github.com/moyus/bucket.js#readme"
+}
