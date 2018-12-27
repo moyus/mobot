@@ -1,6 +1,6 @@
 {
   "name": "@moyu/bucket.js",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "cache scripts and styles in localStorage",
   "main": "bucket.js",
   "repository": {

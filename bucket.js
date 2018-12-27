@@ -9,14 +9,6 @@
    * @param  {Function} callback 回调
    */
   function get(url, callback) {
-    if (/^\/\//.test(url)) {
-      url = window.location.protocol + url;
-    } else if (/^\//.test(url)) {
-      url = window.location.origin + url;
-    } else if (/^\//.test(url)) {
-      url = window.location.href.slice(0, window.location.href.lastIndexOf('/')) + '/' + url;
-    }
-
     var xhr = new XMLHttpRequest();
     xhr.open('GET', url);
     xhr.onreadystatechange = function () {
