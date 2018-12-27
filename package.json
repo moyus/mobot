@@ -1,5 +1,5 @@
 {
-  "name": "bucket.js",
+  "name": "@moyu/bucket.js",
   "version": "0.0.1",
   "description": "cache scripts and styles in localStorage",
   "main": "bucket.js",
