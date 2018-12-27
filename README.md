@@ -1,6 +1,6 @@
 <div align="center">
   <img width="160" height="50" src="logo.svg" alt="bucket.js" />
-  <p color="#6a737d">移动端LocalStorage缓存资源方案</p>
+  <p>移动端LocalStorage缓存资源方案</p>
 </div>
 
 ## 安装
