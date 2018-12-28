@@ -131,7 +131,7 @@
     if (shouldFetch) {
       save(resource, function (err, result) {
         if (err) {
-          return callback(err, source);
+          return callback(err);
         }
         callback(null, result);
       });
@@ -147,20 +147,34 @@
    */
   function queue(resources, callback) {
     var count = resources.length;
-    var items = new Array(resources.length);
+    var stack = new Array(resources.length);
+
+    function checkStack() {
+      for (var i = 0, len = stack.length; i < len; i++) {
+        if (!stack[i]) {
+          break;
+        } else if(stack[i].executed !== true) {
+          inject(stack[i]);
+          stack[i].executed = true;
+        }
+      }
+    }
+
     for (var i = 0, len = resources.length; i < len; i++) {
       (function (i) {
         handle(resources[i], function (err, source) {
           --count;
-          if (!err) {
-            items[i] = source;
-            if (count <= 0) {
-              callback(items.reduce(function (scripts, item) {
-                if (item) {
-                  scripts.push(item);
-                }
-                return scripts;
-              }, []));
+          if (err) {
+            if (callback.called !== true) {
+              callback.called = true;
+              callback(err)
+            }
+          } else {
+            stack[i] = source;
+            checkStack();
+            if (count <= 0 && callback.called !== true) {
+              callback.called = true;
+              callback(null, stack);
             }
           }
         })
@@ -173,23 +187,24 @@
     expire: 24 * 7,
     prefix: 'bucket-',
     require: function (resources, callback) {
-      for (var i = 0, len = resources.length; i < len; i++) {
-        resources[i].cache = resources[i].cache !== false;
-        resources[i].key = resources[i].key || resources[i].url
-        resources[i].unique = resources[i].unique || resources[i].url
-      }
+      resources = resources.reduce(function (acc, item) {
+        if (!item.url) {
+          return acc;
+        }
 
-      queue(resources, function (items) {
-        items.forEach(inject);
+        item.cache = item.cache !== false;
+        item.key = item.key || item.url
+        item.unique = item.unique || item.url
+        acc.push(item)
+
+        return acc
+      }, []);
+
+      queue(resources, function (err, items) {
         if (typeof callback === 'function') {
-          callback(items);
+          callback(err, items);
         }
       });
-
-      return this;
-    },
-    remove: function (key) {
-      localStorage.removeItem(bucket.prefix + key);
 
       return this;
     },
@@ -200,6 +215,9 @@
       } catch (e) {
         return false;
       }
+    },
+    remove: function (key) {
+      localStorage.removeItem(bucket.prefix + key);
 
       return this;
     },
@@ -210,6 +228,7 @@
           this.remove(key);
         }
       }
+
       return this;
     }
   }
