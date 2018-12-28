@@ -52,3 +52,6 @@ bucket.remove('vendors')
 // 清空本地所有缓存资源
 bucket.clear()
 ```
+
+## 相关讨论
+[https://www.zhihu.com/question/28467444](https://www.zhihu.com/question/28467444)
