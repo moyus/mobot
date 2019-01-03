@@ -1,5 +1,5 @@
 <div align="center">
-  <img width="160" height="50" src="https://github.com/moyus/mobot/raw/master/logo.svg" alt="mobot.js" />
+  <img width="160" height="50" src="https://github.com/moyus/mobot/raw/master/logo.svg?sanitize=true" alt="mobot.js" />
   <p>移动端LocalStorage缓存资源方案</p>
 </div>
 

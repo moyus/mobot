@@ -1,5 +1,5 @@
 /*!
- * mobot.js v1.0.1
+ * mobot.js v1.0.2
  * (c) 2018 MOYU
  * Released under the MIT License.
  */
