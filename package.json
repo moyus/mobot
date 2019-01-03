@@ -7,6 +7,9 @@
     "type": "git",
     "url": "git+https://github.com/moyus/bucket.js.git"
   },
+  "scripts": {
+    "build": "uglifyjs mobot.js -o mobot.min.js"
+  },
   "files": [
     "mobot.js",
     "logo.svg",
@@ -28,5 +31,8 @@
   "bugs": {
     "url": "https://github.com/moyus/mobot/issues"
   },
-  "homepage": "https://github.com/moyus/mobot#readme"
+  "homepage": "https://github.com/moyus/mobot#readme",
+  "devDependencies": {
+    "uglify-js": "^3.4.9"
+  }
 }
