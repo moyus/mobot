@@ -1,6 +1,6 @@
 {
   "name": "mobot",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "cache scripts and styles in localStorage",
   "main": "mobot.js",
   "repository": {
@@ -12,6 +12,7 @@
   },
   "files": [
     "mobot.js",
+    "mobot.min.js",
     "logo.svg",
     "README.md",
     "LICENSE"
