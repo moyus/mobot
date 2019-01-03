@@ -1,3 +1,8 @@
+/*!
+ * mobot.js v1.0.0
+ * (c) 2018 MOYU
+ * Released under the MIT License.
+ */
 ;(function (window, document) {
   'use strict';
 
@@ -5,10 +10,11 @@
 
   /**
    * 下载远程资源
-   * @param  {string}   url      资源地址
-   * @param  {Function} callback 回调
+   *
+   * @param  {string}   url
+   * @param  {Function} callback
    */
-  function get(url, callback) {
+  function fetch(url, callback) {
     var xhr = new XMLHttpRequest();
     xhr.open('GET', url);
     xhr.onreadystatechange = function () {
@@ -28,106 +34,96 @@
       if (xhr.readyState < 4) {
         xhr.abort();
       }
-    }, bucket.timeout);
+    }, mobot.timeout);
 
     xhr.send();
   }
 
   /**
-   * 下载并保存资源到localStorage
-   * @param  {object} resource 资源信息
-   * @param  {Function} callback 回调
+   * 下载并保存资源到 LocalStorage
+   *
+   * @param {object}    resource
+   * @param {Function}  callback
    */
   function save(resource, callback) {
-    get(resource.url, function (err, res) {
+    fetch(resource.url, function (err, res) {
       if (err) {
         return callback(err)
       }
-      var result = {
+      var source = {
         content: res.content,
         type: res.type,
         stamp: Date.now(),
         unique: resource.unique,
-        expire: Date.now() + (resource.expire || bucket.expire) * 60 * 60 * 1000
+        expire: Date.now() + (resource.expire || mobot.expire) * 60 * 60 * 1000
       }
 
-      if (resource.cache) {
-        addLocalStorage(resource.key, result)
+      if (source.cache) {
+        addLocalStorage(source.key, result)
       }
 
-      callback(null, result)
+      callback(null, source)
     })
   }
 
   /**
-   * 保存数据到localStorage
-   * @param {string} key  唯一键名
-   * @param {object} data 数据
+   * 保存数据到 LocalStorage
+   *
+   * @param {string}    key
+   * @param {object}    source
    */
-  function addLocalStorage(key, data) {
+  function addLocalStorage(key, source) {
     try {
-      localStorage.setItem(bucket.prefix + key, JSON.stringify(data))
+      localStorage.setItem(mobot.prefix + key, JSON.stringify(source))
     } catch (e) {
       // 超出可缓存的大小限制
       if ( e.name.toUpperCase().indexOf('QUOTA') >= 0 ) {
         var shouldClear;
         for (var item in localStorage) {
-          if (item.indexOf(bucket.prefix) === 0) {
+          if (item.indexOf(mobot.prefix) === 0) {
             shouldClear = true;
             break;
           }
         }
 
         if (shouldClear) {
-          window.bucket.clear();
-          addLocalStorage(key, data);
+          mobot.clear();
+          addLocalStorage(key, source);
         }
       }
     }
   }
 
   /**
-   * 注入脚本到页面
-   * @param  {object} data
+   * 注入资源到页面
+   *
+   * @param {object}    source
    */
-  function inject(data) {
-    if (/javascript/.test(data.type)) {
+  function inject(source) {
+    if (/javascript/.test(source.type)) {
       var script = document.createElement('script');
       script.type = 'text/javascript';
       script.defer = true;
       script.crossorigin = 'anonymous';
-      script.text = data.content;
+      script.text = source.content;
       headEl.appendChild(script);
-    } else if (/css/.test(data.type)) {
+    } else if (/css/.test(source.type)) {
       var style = document.createElement('style');
-      style.innerText = data.content;
+      style.innerText = source.content;
       headEl.appendChild(style);
     }
   }
 
   /**
-   * 检测资源是否过期
-   * @param  {object}  source
-   * @param  {object}  resource
-   * @return {Boolean}
-   */
-  function isCacheInvalid(source, resource) {
-    return !source || source.unique !== resource.unique || source.expire < Date.now()
-  }
-
-  /**
    * 处理资源
+   *
    * @param  {object}   resource
    * @param  {Function} callback
    */
   function handle(resource, callback) {
-    var source, shouldFetch;
-    if (!resource.url) {
-      return callback(new Error('url不能为空'));
-    }
+    var source = mobot.get(resource.key);
+    var shouldFetch = !source || source.unique !== resource.unique || source.expire < Date.now();
 
-    source = bucket.get(resource.key);
-    shouldFetch = isCacheInvalid(source, resource);
     if (shouldFetch) {
       save(resource, function (err, result) {
         if (err) {
@@ -142,7 +138,8 @@
 
   /**
    * 异步队列操作资源
-   * @param  {array}   resources
+   *
+   * @param  {array}    resources
    * @param  {Function} callback
    */
   function queue(resources, callback) {
@@ -182,10 +179,21 @@
     }
   }
 
-  var bucket = window.bucket = {
+  var mobot = window.mobot = {
     timeout: 10000,
     expire: 24 * 7,
-    prefix: 'bucket-',
+    prefix: 'mobot-',
+    /**
+     * 异步获取资源, 但按顺序执行
+     *
+     * @param {Object}   [resources]
+     * @param {string}   [resource.url]
+     * @param {string}   [resource.key=resource.url]
+     * @param {string}   [resource.unique=resource.url]
+     * @param {boolean}  [resource.cache=true]
+     * @param {Function} [callback]
+     * @return {this}
+     */
     require: function (resources, callback) {
       resources = resources.reduce(function (acc, item) {
         if (!item.url) {
@@ -208,22 +216,42 @@
 
       return this;
     },
+    /**
+     * 获取 LocalStorage 里缓存的资源
+     *
+     * @param {string} key
+     * @return {Object|null}
+     */
     get: function (key) {
-      var item = localStorage.getItem(bucket.prefix + key);
+      var item = null;
+
       try {
-        return JSON.parse(item);
-      } catch (e) {
-        return false;
-      }
+        item = JSON.parse(localStorage.getItem(mobot.prefix + key));
+      } catch (e) {}
+
+      return item;
     },
+    /**
+     * 删除 LocalStorage 里缓存的资源
+     *
+     * @param {string} key
+     * @return {this}
+     */
     remove: function (key) {
-      localStorage.removeItem(bucket.prefix + key);
+      try {
+        localStorage.removeItem(mobot.prefix + key);
+      } catch (e) {}
 
       return this;
     },
+    /**
+     * 清空 LocalStorage 里缓存的资源
+     *
+     * @return {this}
+     */
     clear: function () {
       for (var item in localStorage) {
-        var key = item.split(bucket.prefix)[1];
+        var key = item.split(mobot.prefix)[1];
         if (key) {
           this.remove(key);
         }

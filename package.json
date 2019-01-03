@@ -1,14 +1,14 @@
 {
-  "name": "@moyu/bucket.js",
-  "version": "0.0.2",
+  "name": "mobot",
+  "version": "1.0.0",
   "description": "cache scripts and styles in localStorage",
-  "main": "bucket.js",
+  "main": "mobot.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/moyus/bucket.js.git"
   },
   "files": [
-    "bucket.js",
+    "mobot.js",
     "logo.svg",
     "README.md",
     "LICENSE"
@@ -26,7 +26,7 @@
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/moyus/bucket.js/issues"
+    "url": "https://github.com/moyus/mobot/issues"
   },
-  "homepage": "https://github.com/moyus/bucket.js#readme"
+  "homepage": "https://github.com/moyus/mobot#readme"
 }
