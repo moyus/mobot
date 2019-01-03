@@ -227,7 +227,9 @@
 
       try {
         item = JSON.parse(localStorage.getItem(mobot.prefix + key));
-      } catch (e) {}
+      } catch (e) {
+        this.remove(key)
+      }
 
       return item;
     },
