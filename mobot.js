@@ -1,5 +1,5 @@
 /*!
- * mobot.js v1.0.2
+ * mobot.js v1.0.3
  * (c) 2018 MOYU
  * Released under the MIT License.
  */
@@ -51,15 +51,18 @@
         return callback(err)
       }
       var source = {
+        key: resource.key,
+        unique: resource.unique,
+        url: resource.url,
+        cache: resource.cache,
         content: res.content,
         type: res.type,
         stamp: Date.now(),
-        unique: resource.unique,
         expire: Date.now() + (resource.expire || mobot.expire) * 60 * 60 * 1000
       }
 
       if (source.cache) {
-        addLocalStorage(source.key, result)
+        addLocalStorage(source.key, source)
       }
 
       callback(null, source)

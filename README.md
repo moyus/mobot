@@ -39,10 +39,12 @@ mobot.require([
 // 获取本地缓存资源
 mobot.get('app');
 // {
+//   url: string       // 资源地址
+//   key: string       // 索引名
+//   unique: string    // hash值
 //   content: string   // 资源内容
 //   type: string      // 资源类型
 //   stamp: number     // 什么时候缓存的
-//   unique: string    // hash值
 //   expire: number    // 多久之后过期
 // }
 

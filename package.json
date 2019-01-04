@@ -1,6 +1,6 @@
 {
   "name": "mobot",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "cache scripts and styles in localStorage",
   "main": "mobot.js",
   "repository": {
