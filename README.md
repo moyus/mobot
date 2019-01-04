@@ -32,7 +32,7 @@ mobot.require([
     unique: '789',
     cache: true
   }
-], function (resources) {
+], function (err, resources) {
   // 所有资源均已加载并按顺序插入到了head中
 });
 
