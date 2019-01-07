@@ -1,5 +1,5 @@
 /*!
- * mobot.js v1.0.3
+ * mobot.js v1.0.4
  * (c) 2018 MOYU
  * Released under the MIT License.
  */
@@ -107,7 +107,7 @@
       var script = document.createElement('script');
       script.type = 'text/javascript';
       script.defer = true;
-      script.crossorigin = 'anonymous';
+      script.crossOrigin = 'anonymous';
       script.text = source.content;
       headEl.appendChild(script);
     } else if (/css/.test(source.type)) {
