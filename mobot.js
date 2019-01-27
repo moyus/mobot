@@ -1,5 +1,5 @@
 /*!
- * mobot.js v1.0.4
+ * mobot.js v1.0.5
  * (c) 2018 MOYU
  * Released under the MIT License.
  */
@@ -7,6 +7,7 @@
   'use strict';
 
   var headEl = document.head || document.getElementsByTagName('head')[0];
+  var mobot;
 
   /**
    * 下载远程资源
@@ -33,6 +34,7 @@
     setTimeout(function () {
       if (xhr.readyState < 4) {
         xhr.abort();
+        callback(new Error('Request timeout'))
       }
     }, mobot.timeout);
 
@@ -125,7 +127,7 @@
    */
   function handle(resource, callback) {
     var source = mobot.get(resource.key);
-    var shouldFetch = !source || source.unique !== resource.unique || source.expire < Date.now();
+    var shouldFetch = !source || source.unique !== resource.unique || (source.expire > 0 && source.expire < Date.now());
 
     if (shouldFetch) {
       save(resource, function (err, result) {
@@ -167,7 +169,7 @@
           if (err) {
             if (callback.called !== true) {
               callback.called = true;
-              callback(err)
+              callback(err);
             }
           } else {
             stack[i] = source;
@@ -182,7 +184,7 @@
     }
   }
 
-  var mobot = window.mobot = {
+  mobot = window.mobot = {
     timeout: 10000,
     expire: 24 * 7,
     prefix: 'mobot-',
@@ -231,7 +233,7 @@
       try {
         item = JSON.parse(localStorage.getItem(mobot.prefix + key));
       } catch (e) {
-        this.remove(key)
+        mobot.remove(key)
       }
 
       return item;
@@ -258,7 +260,7 @@
       for (var item in localStorage) {
         var key = item.split(mobot.prefix)[1];
         if (key) {
-          this.remove(key);
+          mobot.remove(key);
         }
       }
 
