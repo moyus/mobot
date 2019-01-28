@@ -1,6 +1,6 @@
 {
   "name": "mobot",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "cache scripts and styles in localStorage",
   "main": "mobot.js",
   "repository": {
@@ -8,7 +8,7 @@
     "url": "git+https://github.com/moyus/bucket.js.git"
   },
   "scripts": {
-    "build": "uglifyjs mobot.js -o mobot.min.js"
+    "build": "uglifyjs -o mobot.min.js mobot.js"
   },
   "files": [
     "mobot.js",
